@@ -21,6 +21,7 @@ namespace cse210_batter_csharp
             Actor paddle = cast["paddle"][0];
             Actor ball = cast["balls"][0];
             List<Actor> bricks = cast["bricks"];
+            List<Actor> toRemove = new List<Actor>();
 
             Point velocity = ball.GetVelocity();
             if(_physicsService.IsCollision(paddle, ball))
@@ -37,8 +38,12 @@ namespace cse210_batter_csharp
                     Ball b = (Ball)ball;
                     b.BounceVertical();
                     _audioService.PlaySound(Constants.SOUND_BOUNCE);
-                    cast["bricks"].Remove(brick);
+                    toRemove.Add(brick);
                 }
+            }
+            foreach (Actor brick in toRemove)
+            {
+                cast["bricks"].Remove(brick);
             }
         }
     }
