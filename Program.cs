@@ -55,9 +55,9 @@ namespace cse210_batter_csharp
             cast["bricks"] = new List<Actor>();
             List<Brick> _bricks = new List<Brick>();
 
-            for(int y = 0; y < 120; y+=30)
+            for(int y = 0; y < 120; y+=(Constants.BRICK_HEIGHT + Constants.BRICK_SPACE))
             {
-                for (int x = 50; x < 760; x+=55)
+                for (int x = Constants.BRICK_SPACE; x < 760; x+=(Constants.BRICK_WIDTH + Constants.BRICK_SPACE))
                 {
                     Brick _brick = new Brick();
                     Point _point = new Point(x, y);
@@ -76,14 +76,16 @@ namespace cse210_batter_csharp
             cast["balls"] = new List<Actor>();
 
             Ball _ball = new Ball();
-            Point _ballPoint = new Point(Constants.MAX_X / 2, Constants.MAX_Y / 2);
-            _ball.SetPosition(_ballPoint);
-
+            _ball.SetPosition(new Point(Constants.MAX_X / 2, Constants.MAX_Y / 2));
 
             cast["balls"].Add(_ball);
 
             // The paddle
             cast["paddle"] = new List<Actor>();
+            Paddle _paddle = new Paddle();
+            _paddle.SetPosition(new Point(Constants.PADDLE_X, Constants.PADDLE_Y));
+
+            cast["paddle"].Add(_paddle);
 
             // TODO: Add your paddle here
 
@@ -103,6 +105,17 @@ namespace cse210_batter_csharp
             script["output"].Add(drawActorsAction);
 
             // TODO: Add additional actions here to handle the input, move the actors, handle collisions, etc.
+            MoveActorsAction moveActorsAction = new MoveActorsAction();
+            script["update"].Add(moveActorsAction);
+
+            HandleOffScreenAction handleOffScreenAction = new HandleOffScreenAction();
+            script["update"].Add(handleOffScreenAction);
+
+            ControlActorsAction controlActorsAction = new ControlActorsAction(inputService);
+            script["update"].Add(controlActorsAction);
+
+            HandleCollisionsAction handleCollisionsAction = new HandleCollisionsAction(physicsService);
+            script["update"].Add(handleCollisionsAction);
 
             // Start up the game
             outputService.OpenWindow(Constants.MAX_X, Constants.MAX_Y, "Batter", Constants.FRAME_RATE);
