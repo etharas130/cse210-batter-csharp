@@ -19,23 +19,25 @@ namespace cse210_batter_csharp
         public override void Execute(Dictionary<string, List<Actor>> cast)
         {
             Actor paddle = cast["paddle"][0];
-            Actor ball = cast["balls"][0];
+            Actor balls = cast["balls"][0];
             List<Actor> bricks = cast["bricks"];
-            List<Actor> toRemove = new List<Actor>();
+            List<Actor> toRemove = new List<Actor>();   
 
-            Point velocity = ball.GetVelocity();
-            if(_physicsService.IsCollision(paddle, ball))
+            foreach (Actor ball in cast["balls"])
             {
-                Ball b = (Ball)ball;
-                b.BounceVertical();
-                _audioService.PlaySound(Constants.SOUND_BOUNCE);
+                if(_physicsService.IsCollision(paddle, ball))
+                {
+                    Ball b = (Ball)ball;
+                    b.BounceVertical();
+                    _audioService.PlaySound(Constants.SOUND_BOUNCE);
+                }
             }
 
             foreach (Actor brick in bricks)
             {
-                if(_physicsService.IsCollision(ball, brick))
+                if(_physicsService.IsCollision(balls, brick))
                 {
-                    Ball b = (Ball)ball;
+                    Ball b = (Ball)balls;
                     b.BounceVertical();
                     _audioService.PlaySound(Constants.SOUND_BOUNCE);
                     toRemove.Add(brick);
